@@ -1,0 +1,43 @@
+{
+  "name": "pailingual-odata-csdl-xml",
+  "version": "2.0.0-beta.2",
+  "description": "Implements reading XML metadata document for pailingual-odata",
+  "main": "index.js",
+  "author": {
+    "name": "Gennady Pundikov"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "test": "mocha ./tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/genusP/pailingual-odata-csdl-xml.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "odata",
+    "odata-v4",
+    "odata-client",
+    "typescript"
+  ],
+  "files": [
+    "*.ts",
+    "*.js",
+    "*.map"
+  ],
+  "dependencies": {
+    "pailingual-odata": "2.0.0-alpha.1"
+  },
+  "devDependencies": {
+    "@types/chai": "4.1.7",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^8.0.14",
+    "chai": "^4.2.0",
+    "jsdom": "^15.1.1",
+    "jsdom-global": "^3.0.2",
+    "mocha": "^6.1.4",
+    "typescript": "^3.1.6"
+  }
+}
