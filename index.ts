@@ -156,15 +156,17 @@ function readDynamicExpression(node: Node): ReadResult[] {
         case "PATH":
         case "BINARY":
         case "DATE":
-        case "DATETIMEOFFSET":
         case "DECIMAL":
         case "DURATION":
-        case "FLOAT":
         case "GUID":
         case "TIMEOFDAY":
             return [readPathOrConstExpression(node)];
-        case "BOOLEAN":
-            return [{ name: "", kind: undefined, result: { "$Boolean": convertBoolean(node.textContent.trim()) } }];
+        case "DATETIMEOFFSET":
+            return [{ name: "", kind: undefined, result: { "$DateTimeOffset": new Date(node.textContent).toISOString() }}]
+        case "FLOAT":
+            return [readFloatConstExpression(node)];
+        case "BOOL":
+            return [{ name: "", kind: undefined, result: convertBoolean(node.textContent.trim())  }];
         case "INT":
             return [{ name: "", kind: undefined, result: { "$Int": parseInt(node.textContent.trim()) } }];
         case "STRING":
@@ -178,7 +180,7 @@ function readDynamicExpression(node: Node): ReadResult[] {
                 .split(" ")
                 .map(_ => _.split("/")[1])
                 .join(",");
-            return [{ name: "$EnumMember", kind: undefined, result }]
+            return [{ name: "", kind: undefined, result: { "$EnumMember":result } }]
         case "PROPERTYVALUE":
             return readPropertyValue(element);
         case "APPLY":
@@ -225,6 +227,15 @@ function readDynamicExpressionOperators(elem: Element): ReadResult {
     }
     result[name]=chields.length == 1 ? chields[0] : chields;
     return { name:"", kind: undefined, result, childReaded: true };
+}
+
+function readFloatConstExpression(node: Node): ReadResult {
+    const content = node.textContent;
+    const v = parseFloat(content);
+    if (v)
+        return { name: "", kind: undefined, result: v }
+    else
+        return { name: "$Float", kind: undefined, result: content };
 }
 
 function readFunctionImport(elem: Element): ReadResult {

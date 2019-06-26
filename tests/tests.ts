@@ -453,6 +453,7 @@ describe("", () => {
 
         assert.deepEqual(actual, expected);
     })
+
     it("apply", () => {
         const xml = `<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
     <edmx:DataServices>
@@ -1035,5 +1036,148 @@ describe("", () => {
         }
 
         assert.deepEqual(actual, expected);
+    })
+
+    it("constant expressions", () => {
+        const xml = `<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+    <edmx:DataServices>
+        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" 
+                Namespace="ODataTest">
+            <EntityType Name="AnnotableAttr">
+                <Annotation Term="UI.Thumbnail" Binary="T0RhdGE" />
+                <Annotation Term="UI.ReadOnly" Bool="true" />
+                <Annotation Term="vCard.birthDay" Date="2000-01-01" />
+                <Annotation Term="UI.LastUpdated" DateTimeOffset="2000-01-01T16:00:00.000Z" />
+                <Annotation Term="UI.Width" Decimal="3.14" />
+                <Annotation Term="task.duration" Duration="P7D" />
+                <Annotation Term="self.HasPattern" EnumMember="org.example.Pattern/Red org.example.Pattern/Striped" />
+                <Annotation Term="UI.FloatWidth" Float="3.14" />
+                <Annotation Term="UI.Id" Guid="21EC2020-3AEA-1069-A2DD-08002B30309D" />
+                <Annotation Term="UI.Int" Int="42" />
+                <Annotation Term="UI.DisplayName" String="Product Catalog" />
+                <Annotation Term="UI.EndTime" TimeOfDay="21:45:00" />
+
+            </EntityType>
+            <EntityType Name="AnnotableElem">
+                <Annotation Term="UI.Thumbnail">
+                  <Binary>T0RhdGE</Binary>
+                </Annotation>
+                <Annotation Term="UI.ReadOnly">
+                  <Bool>true</Bool>
+                </Annotation>
+                <Annotation Term="vCard.birthDay">
+                  <Date>2000-01-01</Date>
+                </Annotation>
+                <Annotation Term="UI.LastUpdated">
+                  <DateTimeOffset>2000-01-01T16:00:00.000-09:00</DateTimeOffset>
+                </Annotation>
+                <Annotation Term="UI.Width">
+                  <Decimal>3.14</Decimal>
+                </Annotation>
+                <Annotation Term="task.duration">
+                  <Duration>P11DT23H59M59.999999999999S</Duration>
+                </Annotation>
+                <Annotation Term="self.HasPattern">
+                  <EnumMember>org.example.Pattern/Red org.example.Pattern/Striped</EnumMember>
+                </Annotation>
+                <Annotation Term="UI.FloatWidth">
+                  <Float>INF</Float>
+                </Annotation>
+                <Annotation Term="UI.Id">
+                  <Guid>21EC2020-3AEA-1069-A2DD-08002B30309D</Guid>
+                </Annotation>
+                <Annotation Term="UI.Int">
+                  <Int>42</Int>
+                </Annotation>
+                <Annotation Term="UI.DisplayName">
+                  <String>Product Catalog</String>
+                </Annotation>
+                <Annotation Term="UI.EndTime">
+                  <TimeOfDay>21:45:00</TimeOfDay>
+                </Annotation>
+            </EntityType>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+        const actual = loadFromXml(xml);
+
+        const expected: csdl.MetadataDocument = {
+            $ApiRoot: "", $Version: "4.0",
+            "ODataTest": {
+                "AnnotableAttr": {
+                    $Kind: csdl.CsdlKind.EntityType,
+                    "@UI.Thumbnail": {
+                        "$Binary": "T0RhdGE"
+                    },
+                    "@UI.ReadOnly": true,
+                    "@vCard.birthDay": {
+                        "$Date": "2000-01-01"
+                    },
+                    "@UI.LastUpdated": {
+                        "$DateTimeOffset": "2000-01-01T16:00:00.000Z"
+                    },
+                    "@UI.Width": {
+                        "$Decimal": "3.14"
+                    },
+                    "@task.duration": {
+                        "$Duration": "P7D"
+                    },
+                    "@self.HasPattern": {
+                        "$EnumMember": "Red,Striped"
+                    },
+                    "@UI.FloatWidth": 3.14,
+                    "@UI.Id": {
+                        "$Guid": "21EC2020-3AEA-1069-A2DD-08002B30309D"
+                    },
+                    "@UI.Int": {
+                        "$Int": 42
+                    },
+                    "@UI.DisplayName": "Product Catalog",
+                    "@UI.EndTime": {
+                        "$TimeOfDay": "21:45:00"
+                    }
+                },
+
+                "AnnotableElem": {
+                    $Kind: csdl.CsdlKind.EntityType,
+                    "@UI.Thumbnail": {
+                        "$Binary": "T0RhdGE"
+                    },
+                    "@UI.ReadOnly": true,
+                    "@vCard.birthDay": {
+                        "$Date": "2000-01-01"
+                    },
+                    "@UI.LastUpdated": {
+                        "$DateTimeOffset": "2000-01-02T01:00:00.000Z"
+                    },
+                    "@UI.Width": {
+                        "$Decimal": "3.14"
+                    },
+                    "@task.duration": {
+                        "$Duration": "P11DT23H59M59.999999999999S"
+                    },
+                    "@self.HasPattern": {
+                        "$EnumMember": "Red,Striped"
+                    },
+                    "@UI.FloatWidth": {
+                        "$Float": "INF"
+                    },
+                    "@UI.Id": {
+                        "$Guid": "21EC2020-3AEA-1069-A2DD-08002B30309D"
+                    },
+                    "@UI.Int": {
+                        "$Int": 42
+                    },
+                    "@UI.DisplayName": "Product Catalog",
+                    "@UI.EndTime": {
+                        "$TimeOfDay": "21:45:00"
+                    }
+                }
+            } as csdl.Namespace
+        };
+
+        assert.deepEqual(actual, expected);
+
     })
 });
